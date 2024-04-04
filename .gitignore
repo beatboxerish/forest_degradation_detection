@@ -1,0 +1,5 @@
+# leave out all data
+data
+
+# pycharm specific folder
+.idea
