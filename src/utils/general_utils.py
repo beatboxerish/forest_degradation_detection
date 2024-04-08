@@ -1,5 +1,7 @@
 import shutil
 import yaml
+from PIL import Image
+import cv2
 
 
 def convert_to_single_list(list_of_lists):
@@ -33,3 +35,16 @@ def open_yaml_file(original_data_yaml_address):
 def save_yaml_file(yaml_file, save_yaml_address):
     with open(save_yaml_address, 'w') as outfile:
         yaml.dump(yaml_file, outfile, default_flow_style=False)
+
+
+def load_image_with_pil(original_image_path):
+    img = Image.open(original_image_path)
+    return img
+
+
+def load_image_with_cv(original_image_path):
+    image_bgr = cv2.imread(original_image_path)
+    original_image_size = image_bgr.shape[1], image_bgr.shape[0]
+
+    image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
+    return image_bgr, image_rgb, original_image_size

@@ -2,10 +2,11 @@ import os
 import random
 import shutil
 from pathlib import Path
+from ultralytics import YOLO
 
-from .general_utils import copy_images, get_names_from_names_with_extension
-from .coco_utils import save_coco_file
-from ..JSON2YOLO.general_json2yolo import convert_coco_json
+from src.utils.general_utils import copy_images, get_names_from_names_with_extension
+from src.utils.coco_utils import save_coco_file
+from src.JSON2YOLO.general_json2yolo import convert_coco_json
 
 
 def get_train_test_val_image_names(coco_file, preprocess_dict):
@@ -126,4 +127,8 @@ def create_labels_images(parent):
     Path(os.path.join(parent, 'images')).mkdir(parents=True, exist_ok=True)
     return None
 
+
+def load_yolo(model_address):
+    model = YOLO(model_address)
+    return model
 

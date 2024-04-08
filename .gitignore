@@ -4,5 +4,11 @@ data
 # leave out all raw models
 models
 
+# leave out results
+results
+
+# pycache
+__pycache__
+
 # pycharm specific folder
 .idea

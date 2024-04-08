@@ -1,4 +1,4 @@
-from .general_utils import open_yaml_file, save_yaml_file
+from src.utils.general_utils import open_yaml_file, save_yaml_file
 
 
 def check_ultralytics_settings(address):
@@ -25,3 +25,18 @@ def check_ultralytics_settings(address):
         return False
     else:
         return True
+
+
+def build_color_class_legend(current_name_map, class_to_color_map):
+  fig = plt.figure()
+  ax = fig.add_subplot(1, 1, 1)
+
+  legend_elements = []
+  for idx in range(len(current_name_map.keys())):
+    class_name = current_name_map[idx]
+    class_color = class_to_color_map[idx]
+    class_color = [i/255 for i in class_color]
+    patch = Patch(facecolor= class_color, label=class_name, edgecolor='black')
+    legend_elements.append(patch)
+  ax.legend(handles=legend_elements, loc='center')
+  return fig, ax

@@ -1,4 +1,5 @@
-from utils.train_utils import train_model, load_yolo
+from src.utils.train_utils import train_model
+from src.utils.yolo_utils import load_yolo
 
 
 train_parameter_dict = {
@@ -10,7 +11,7 @@ train_parameter_dict = {
     'batch': 8
 }
 
-yolo_address = "../models/yolov8m-seg.pt"
+yolo_address = "../models/base-yolov8m-seg.pt"
 
 # load a model
 model = load_yolo(yolo_address)
