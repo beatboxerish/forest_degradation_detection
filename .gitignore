@@ -1,5 +1,8 @@
 # leave out all data
 data
 
+# leave out all raw models
+models
+
 # pycharm specific folder
 .idea
