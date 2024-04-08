@@ -24,6 +24,12 @@ def copy_images(source_images, target_images):
     return None
 
 
+def open_yaml_file(original_data_yaml_address):
+    with open(original_data_yaml_address, 'r') as infile:
+        yaml_file = yaml.load(infile, Loader=yaml.SafeLoader)
+    return yaml_file
+
+
 def save_yaml_file(yaml_file, save_yaml_address):
     with open(save_yaml_address, 'w') as outfile:
         yaml.dump(yaml_file, outfile, default_flow_style=False)
