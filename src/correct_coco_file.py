@@ -1,5 +1,5 @@
 from glob import glob
-from code.utils.coco_utils import read_coco_file, save_coco_file
+from src.utils.coco_utils import read_coco_file, save_coco_file
 
 
 annotation_folder = ("/Users/ishannangia/github_repos/Mhadei_Restoration/data/"

@@ -1,11 +1,11 @@
 from glob import glob
 import shutil
 
-from code.utils.general_utils import save_yaml_file
-from code.utils.coco_utils import read_coco_file, preprocess_labels
-from code.utils.yolo_utils import (get_new_data_yaml, create_new_directory_structure,
-                                   get_train_test_val_image_names, copy_and_move_images,
-                                   create_and_move_annotations)
+from src.utils.general_utils import save_yaml_file
+from src.utils.coco_utils import read_coco_file, preprocess_labels
+from src.utils.yolo_utils import (get_new_data_yaml, create_new_directory_structure,
+                                  get_train_test_val_image_names, copy_and_move_images,
+                                  create_and_move_annotations)
 
 
 annotation_folder = ("/Users/ishannangia/github_repos/Mhadei_Restoration/data/"
