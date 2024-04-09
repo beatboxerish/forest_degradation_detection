@@ -113,7 +113,7 @@ def display_images_comparison(original_image, image_with_bboxes,
                               image_with_masks):
     if type(original_image) is str:
         original_image = load_image_with_pil(original_image)
-    fig, ax = plt.subplots(1, 3, figsize=(30, 90))
+    fig, ax = plt.subplots(1, 3, figsize=(15, 6))
     ax[0].imshow(original_image)
     ax[1].imshow(image_with_bboxes)
     ax[2].imshow(image_with_masks)
