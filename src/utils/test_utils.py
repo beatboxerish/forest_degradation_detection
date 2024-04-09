@@ -1,8 +1,10 @@
 from PIL import Image
 import cv2
 import matplotlib.pyplot as plt
+from matplotlib.patches import Patch
 
-from src.utils.general_utils import load_image_with_pil, load_image_with_cv
+from src.utils.general_utils import (load_image_with_pil, load_image_with_cv,
+                                     get_names_from_names_with_extension)
 
 ALL_COLORS = [
     (255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 255), (255, 0, 255),
@@ -26,7 +28,7 @@ def get_bboxes_masks_on_image(original_image_path, save_image_path, model):
     current_masks_xy = [i.xy[0] for i in current_masks]
 
     class_to_color_map = get_class_to_color_map(current_name_map)
-    # color_class_legend = build_color_class_legend(current_name_map, class_to_color_map)
+    color_class_legend = build_color_class_legend(current_name_map, class_to_color_map)
     image_with_bboxes = get_bboxes_on_image(original_image_path, current_bboxes_n,
                                             current_classes, class_to_color_map)
     image_with_masks = get_masks_on_image(original_image_path, current_masks_xy,
@@ -34,6 +36,25 @@ def get_bboxes_masks_on_image(original_image_path, save_image_path, model):
     image_comparison_plot = display_images_comparison(original_image_path, image_with_bboxes,
                                                       image_with_masks)
     image_comparison_plot.savefig(save_image_path)
+    color_class_legend.savefig(
+        get_names_from_names_with_extension([save_image_path])[0] + "_legend.jpg"
+    )
+    return None
+
+
+def build_color_class_legend(current_name_map, class_to_color_map):
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+
+    legend_elements = []
+    for idx in range(len(current_name_map.keys())):
+        class_name = current_name_map[idx]
+        class_color = class_to_color_map[idx]
+        class_color = [i/255 for i in class_color]
+        patch = Patch(facecolor=class_color, label=class_name, edgecolor='black')
+        legend_elements.append(patch)
+    ax.legend(handles=legend_elements, loc='center')
+    return fig
 
 
 def get_results_on_image(image_path, model, show_labels=True, conf=0.25, iou=0.3, imgsz=640):

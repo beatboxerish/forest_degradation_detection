@@ -15,7 +15,8 @@ def convert_to_single_list(list_of_lists):
 
 
 def get_names_from_names_with_extension(full_names):
-    names = [i.split(".")[0] for i in full_names]
+    names = [i.split(".")[:-1] for i in full_names]
+    names = [".".join(i) for i in names]
     return names
 
 
