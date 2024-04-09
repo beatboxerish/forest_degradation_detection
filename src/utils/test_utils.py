@@ -2,6 +2,8 @@ from PIL import Image
 import cv2
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
+import torch
+import numpy as np
 
 from src.utils.general_utils import (load_image_with_pil, load_image_with_cv,
                                      get_names_from_names_with_extension)
@@ -118,3 +120,61 @@ def display_images_comparison(original_image, image_with_bboxes,
     ax[1].imshow(image_with_bboxes)
     ax[2].imshow(image_with_masks)
     return fig
+
+
+def get_comparison_image_with_original_labels(
+        original_image_path, original_label_path,
+        save_image_path, model, conf=0.25, iou=0.3,
+        imgsz=640):
+    # predicted information
+    results = get_results_on_image(original_image_path, model, conf=conf,
+                                   iou=iou, imgsz=imgsz)[0]
+
+    # dictionary of ID to class name
+    current_name_map = results.names
+    class_to_color_map = get_class_to_color_map(current_name_map)
+    color_class_legend = build_color_class_legend(current_name_map, class_to_color_map)
+
+    current_classes = results.boxes.cls
+    current_masks = results.masks
+    current_masks_xy = [i.xy[0] for i in current_masks]
+
+    # true information
+    true_classes, true_seg_points = get_classes_segmentations_from_label_file(original_label_path)
+    true_classes = torch.tensor(true_classes)
+    height, width = results[0].orig_img.shape[0], results[0].orig_img.shape[1]
+    true_seg_points = [np.array([[width*i[0], height*i[1]] for i in individual_seg_points])
+                       for individual_seg_points in true_seg_points]
+
+    # generating masks and plots
+    image_with_predicted_masks = get_masks_on_image(original_image_path, current_masks_xy,
+                                                    current_classes, class_to_color_map)
+    image_with_true_masks = get_masks_on_image(original_image_path, true_seg_points,
+                                               true_classes, class_to_color_map)
+    image_comparison_plot = display_images_comparison(original_image_path, image_with_true_masks,
+                                                      image_with_predicted_masks)
+
+    image_comparison_plot.savefig(save_image_path)
+    color_class_legend.savefig(
+        get_names_from_names_with_extension([save_image_path])[0] + "_legend.jpg"
+    )
+
+    return image_comparison_plot
+
+
+def get_classes_segmentations_from_label_file(labels_for_image):
+    with open(labels_for_image, "r") as f:
+        labels = f.read().strip()
+    line_list = labels.split("\n")
+    classes = []
+    all_seg_points = []
+    for _, line in enumerate(line_list):
+        seg_points = []
+        individual_numbers = [float(i) for i in line.split(" ")]
+        classes.append(individual_numbers[0])
+        individual_numbers = individual_numbers[1:]
+        for idx in range(0, len(individual_numbers), 2):
+            seg_points.append([individual_numbers[idx], individual_numbers[idx+1]])
+        all_seg_points.append(np.array(seg_points))
+
+    return classes, all_seg_points
