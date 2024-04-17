@@ -12,3 +12,6 @@ __pycache__
 
 # pycharm specific folder
 .idea
+
+# MacOS specific file
+.DS_Store
