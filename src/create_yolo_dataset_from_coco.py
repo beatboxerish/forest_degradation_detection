@@ -12,7 +12,7 @@ annotation_folder = ("/Users/ishannangia/github_repos/Mhadei_Restoration/data/"
                      "original-data/annotation_files_coco-images_orthos/")
 image_source_folder = ("/Users/ishannangia/github_repos/Mhadei_Restoration/data/"
                        "original-data/images_orthos/")
-target_parent_folder = '/Users/ishannangia/github_repos/Mhadei_Restoration/data/Yolo-2'
+target_parent_folder = '/Users/ishannangia/github_repos/Mhadei_Restoration/data/Yolo-3'
 
 label_dict = {
     "Distorted Image": "Distorted Image",
@@ -24,8 +24,8 @@ label_dict = {
 
 preprocess_dict = {
     "train_size": 20,
-    "val_size": 5,
-    "test_size": 3,
+    "val_size": 8,
+    "test_size": 0,
     "labels": label_dict,
 }
 

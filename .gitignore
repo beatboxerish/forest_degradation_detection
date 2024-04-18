@@ -15,3 +15,6 @@ __pycache__
 
 # MacOS specific file
 .DS_Store
+
+# rough folder for just playing around
+rough

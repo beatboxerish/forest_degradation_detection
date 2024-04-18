@@ -17,7 +17,7 @@ def get_train_test_val_image_names(coco_file, preprocess_dict):
     :param preprocess_dict:
     :return:
     """
-    train_images = val_images = test_images = None
+    train_images = val_images = test_images = []
     images = [image['file_name'] for image in coco_file["images"]]
 
     current_images = images.copy()
@@ -36,18 +36,22 @@ def get_train_test_val_image_names(coco_file, preprocess_dict):
 
 def copy_and_move_images(image_source_folder, train_image_names, val_image_names, test_image_names,
                          target_parent_folder, data_yaml):
-    train_image_sources = [os.path.join(image_source_folder, train_image) for train_image in train_image_names]
-    val_image_sources = [os.path.join(image_source_folder, val_image) for val_image in val_image_names]
-    test_image_sources = [os.path.join(image_source_folder, test_image) for test_image in test_image_names]
+    if len(train_image_names):
+        train_image_sources = [os.path.join(image_source_folder, train_image) for train_image in train_image_names]
+        train_image_targets = get_train_test_val_image_locations(data_yaml, train_image_names, 'train',
+                                                                 target_parent_folder)
+        copy_images(train_image_sources, train_image_targets)
 
-    train_image_targets = get_train_test_val_image_locations(data_yaml, train_image_names, 'train',
-                                                             target_parent_folder)
-    val_image_targets = get_train_test_val_image_locations(data_yaml, val_image_names, 'val', target_parent_folder)
-    test_image_targets = get_train_test_val_image_locations(data_yaml, test_image_names, 'test', target_parent_folder)
-
-    copy_images(train_image_sources, train_image_targets)
-    copy_images(val_image_sources, val_image_targets)
-    copy_images(test_image_sources, test_image_targets)
+    if len(val_image_names):
+        val_image_sources = [os.path.join(image_source_folder, val_image) for val_image in val_image_names]
+        val_image_targets = get_train_test_val_image_locations(data_yaml, val_image_names, 'val',
+                                                               target_parent_folder)
+        copy_images(val_image_sources, val_image_targets)
+    if len(test_image_names):
+        test_image_sources = [os.path.join(image_source_folder, test_image) for test_image in test_image_names]
+        test_image_targets = get_train_test_val_image_locations(data_yaml, test_image_names, 'test',
+                                                                target_parent_folder)
+        copy_images(test_image_sources, test_image_targets)
     return None
 
 
