@@ -4,9 +4,14 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 import torch
 import numpy as np
+import os
+import shutil
+from pathlib import Path
 
 from src.utils.general_utils import (load_image_with_pil, load_image_with_cv,
                                      get_names_from_names_with_extension)
+from src.utils.general_utils import open_yaml_file, save_yaml_file
+from src.utils.yolo_utils import create_labels_images
 
 ALL_COLORS = [
     (255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 255), (255, 0, 255),
@@ -178,3 +183,63 @@ def get_classes_segmentations_from_label_file(labels_for_image):
         all_seg_points.append(np.array(seg_points))
 
     return classes, all_seg_points
+
+
+def get_results_of_image_with_labels(model,
+                                     img_address,
+                                     label_address,
+                                     original_data_yaml_address,
+                                     prediction_save_path):
+    # create val yaml
+    val_data_yaml, val_data_yaml_address, val_parent_folder = (
+        create_yaml_for_val(original_data_yaml_address)
+    )
+    # create dirs
+    val_data_yaml = create_val_dirs(val_data_yaml, val_data_yaml_address,
+                                    val_parent_folder)
+    # move image and labels
+    shutil.copyfile(img_address, os.path.join(val_data_yaml["val"],
+                                              'images',
+                                              img_address.split('/')[-1]))
+    shutil.copyfile(label_address, os.path.join(val_data_yaml["val"],
+                                                'labels',
+                                                label_address.split('/')[-1]))
+
+    # get results
+    results = model.val(data=val_data_yaml_address,
+                        save_json=True)
+    shutil.copyfile(
+        os.path.join(results.save_dir, 'predictions.json'),
+        os.path.join(prediction_save_path, 'predictions.json')
+    )
+    # remove val dir and val only file
+    shutil.rmtree(val_data_yaml['val'])
+    os.remove(val_data_yaml_address)
+    # TODO: Change below
+    shutil.rmtree(results.save_dir)
+    return results
+
+
+def create_yaml_for_val(original_data_yaml_address):
+    yaml_file = open_yaml_file(original_data_yaml_address)
+    del yaml_file['test'], yaml_file['train']
+    val_yaml_address = get_val_yaml_address(original_data_yaml_address)
+    val_parent_folder = "/".join(yaml_file['val'].split("/")[:-1])
+    return yaml_file, val_yaml_address, val_parent_folder
+
+
+def get_val_yaml_address(original_yaml_address):
+    full_path = original_yaml_address.split("/")[:-1]
+    full_path.append('val_only.yaml')
+    full_path = "/".join(full_path)
+    return full_path
+
+
+def create_val_dirs(data_yaml, data_yaml_address, parent_folder="."):
+    test_with_labels_path = os.path.join(parent_folder, "test_with_labels")
+    Path(test_with_labels_path).mkdir(parents=True, exist_ok=True)
+    create_labels_images(test_with_labels_path)
+    data_yaml['val'] = test_with_labels_path
+    data_yaml['train'] = ""
+    save_yaml_file(data_yaml, data_yaml_address)
+    return data_yaml
