@@ -21,3 +21,6 @@ rough
 
 # runs folder
 runs
+
+# JSON2YOLO changes TODO: has to be removed and json2yolo changes should reflect
+src/JSON2YOLO
