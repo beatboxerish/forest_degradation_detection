@@ -17,20 +17,27 @@ def get_train_test_val_image_names(coco_file, preprocess_dict):
     :param preprocess_dict:
     :return:
     """
+    # TODO: create check to ensure train and val sizes are defined in preprocess dict
     train_images = val_images = test_images = []
     images = [image['file_name'] for image in coco_file["images"]]
 
+    train_size = int(preprocess_dict['train_size'] * len(images))
+    if preprocess_dict['test_size']:
+        val_size = int(preprocess_dict['val_size'] * len(images))
+        test_size = len(images) - train_size - val_size
+    else:
+        val_size = len(images) - train_size
+        test_size = 0
+
     current_images = images.copy()
-    if preprocess_dict['train_size']:
-        train_images = random.sample(current_images, preprocess_dict['train_size'])
+    train_images = random.sample(current_images, train_size)
 
     current_images = list(set(current_images) - set(train_images))
-    if preprocess_dict['val_size']:
-        val_images = random.sample(current_images, preprocess_dict['val_size'])
+    val_images = random.sample(current_images, val_size)
 
     current_images = list(set(current_images) - set(val_images))
-    if preprocess_dict['test_size']:
-        test_images = random.sample(current_images, preprocess_dict['test_size'])
+    if test_size:
+        test_images = random.sample(current_images, test_size)
     return train_images, val_images, test_images
 
 

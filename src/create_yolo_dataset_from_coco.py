@@ -8,33 +8,41 @@ from src.utils.yolo_utils import (get_new_data_yaml, create_new_directory_struct
                                   create_and_move_annotations)
 
 
-annotation_folder = ("/Users/ishannangia/github_repos/Mhadei_Restoration/data/"
-                     "original-data/annotation_files_coco-images_orthos/")
+annotation_file = ("/Users/ishannangia/github_repos/Mhadei_Restoration/data/"
+                     "original-data/annotation_files_coco-images_orthos/iteration-II.json")
 image_source_folder = ("/Users/ishannangia/github_repos/Mhadei_Restoration/data/"
                        "original-data/images_orthos/")
-target_parent_folder = '/Users/ishannangia/github_repos/Mhadei_Restoration/data/Yolo-3'
+target_parent_folder = '/Users/ishannangia/github_repos/Mhadei_Restoration/data/Yolo-iteration-II'
 
+
+# TODO: allow for stratified sampling of images
+# TODO: simplify this. Labels not included could be left as they are. Null labelling should also be an option.
 label_dict = {
     "Distorted Image": "Distorted Image",
     'Canopy Gap: Shaded': 'Canopy Gap',
     'Canopy Gap: Vegetated': 'Canopy Gap',
-    "Canopy Gap: Bare Land": 'Canopy Gap',
-    'Canopy Gap: Unknown': "Canopy Gap"
+    "Canopy Gap: Bare Land": 'Bare Land',
+    'Canopy Gap: Unknown': "Canopy Gap",
+    'Plantation': 'Plantation',
+    'Potential Invasive': 'Potential Invasive',
+    'Unknown': 'Unknown',
+    'Potential Creeper': 'Potential Creeper',
+    'Cane': 'Cane'
 }
 
+# TODO: Allow for proportions below instead of absolute numbers
 preprocess_dict = {
-    "train_size": 20,
-    "val_size": 8,
+    "train_size": 0.7,
+    "val_size": 0.3,
     "test_size": 0,
     "labels": label_dict,
 }
 
-# grabbing all image and annotation file addresses
+# grabbing all images
 image_source_addresses = glob(f"{image_source_folder}/*")
-annotation_files = glob(f"{annotation_folder}/*")
 
-# loading the coco file. Only loads 1 file for now.
-coco_file = read_coco_file(annotation_files[0])
+# loading the coco file
+coco_file = read_coco_file(annotation_file)
 
 # preprocessing labels of coco files and take the first file
 coco_file = preprocess_labels([coco_file], preprocess_dict)[0]
