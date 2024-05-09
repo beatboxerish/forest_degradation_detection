@@ -2,6 +2,19 @@ import geopandas as gpd
 import rasterio
 from rasterio import transform, features
 import pandas as pd
+from glob import glob
+import os
+
+
+def get_vectors_from_folders(folders_with_vectors):
+    files = []
+    for folder in folders_with_vectors:
+        site_name = folder.strip("/").split("/")[-1].split("_")[0]  # super custom way to remove unwanted files
+        vector_path = os.path.join(folder, "*.geojson")
+        new_files = glob(vector_path)
+        new_files = [i for i in new_files if site_name not in i.strip('/').split("/")[-1]]  # super custom way
+        files.extend(new_files)
+    return files
 
 
 def form_gdf_from_vector_files(vector_paths):
