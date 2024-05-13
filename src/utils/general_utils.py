@@ -2,6 +2,11 @@ import shutil
 import yaml
 from PIL import Image
 import cv2
+import os
+from glob import glob
+
+# TODO: read global variables from config file
+POSSIBLE_IMAGE_EXTENSIONS = ["tif", "TIF", "jpg", "JPG", "png", "PNG"]
 
 
 def convert_to_single_list(list_of_lists):
@@ -51,3 +56,22 @@ def load_image_with_cv(original_image_path):
 
     image_rgb = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)
     return image_bgr, image_rgb, original_image_size
+
+
+def get_image_paths_from_folder(folder):
+    all_images = []
+    for extension in POSSIBLE_IMAGE_EXTENSIONS:
+        current_extension_images = glob(os.path.join(folder, f"*.{extension}"))
+        all_images.extend(current_extension_images)
+    return all_images
+
+
+def get_images_from_paths(paths, cv=True):
+    images = []
+    for path in paths:
+        if not cv:
+            img = load_image_with_pil(path)
+        else:
+            image_bgr, img, original_image_size = load_image_with_cv(path)
+        images.append(img)
+    return images

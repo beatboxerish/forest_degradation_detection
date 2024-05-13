@@ -1,14 +1,15 @@
 from src.utils.test_utils import (get_bboxes_masks_on_image,
                                   get_comparison_image_with_original_labels,
-                                  get_results_of_image_with_labels)
+                                  get_results_of_image_with_labels,
+                                  get_coco_file_on_images_without_labels)
 from src.utils.yolo_utils import load_yolo
 
 test_image_path = "../data/Yolo-2/val/images/burntSite_x_1920_y_1920.tif"
 test_image_label_path = "../data/Yolo-2/val/labels/burntSite_x_1920_y_1920.txt"
 save_image_path = "../results/testing_this.png"
-model_path = '../models/yolo-2_best.pt'
 original_data_yaml_address = "../data/Yolo-3/data.yaml"
 save_results_path = '../results/'
+model_path = '../models/yolo-10_05.pt'
 
 model = load_yolo(model_path)
 
@@ -20,9 +21,23 @@ model = load_yolo(model_path)
 #                                           save_image_path, model)
 
 # getting results object for image with labels
-results = get_results_of_image_with_labels(model,
-                                           test_image_path,
-                                           test_image_label_path,
-                                           original_data_yaml_address,
-                                           save_results_path)
+# results = get_results_of_image_with_labels(model,
+#                                            test_image_path,
+#                                            test_image_label_path,
+#                                            original_data_yaml_address,
+#                                            save_results_path)
+
+# simple testing without validation. In the case where no data labels are present.
+test_folder_path = "../data/test-data"  # folder containing test images
+save_output_path = '../results/coco_file-karthik.json'
+test_param_dict = dict(
+    save=False,
+    plots=False,
+    show_labels=False,
+    line_width=0,
+    conf=0.5,
+    imgsz=640,
+    show_conf=False,
+)
+get_coco_file_on_images_without_labels(test_folder_path, save_output_path, model, test_param_dict)
 

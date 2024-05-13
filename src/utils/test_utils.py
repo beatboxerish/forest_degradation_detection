@@ -7,9 +7,11 @@ import numpy as np
 import os
 import shutil
 from pathlib import Path
+import supervision as sv
 
 from src.utils.general_utils import (load_image_with_pil, load_image_with_cv,
-                                     get_names_from_names_with_extension)
+                                     get_names_from_names_with_extension, get_image_paths_from_folder,
+                                     get_images_from_paths)
 from src.utils.general_utils import open_yaml_file, save_yaml_file
 from src.utils.yolo_utils import create_labels_images
 
@@ -243,3 +245,35 @@ def create_val_dirs(data_yaml, data_yaml_address, parent_folder="."):
     data_yaml['train'] = ""
     save_yaml_file(data_yaml, data_yaml_address)
     return data_yaml
+
+
+def get_coco_file_on_images_without_labels(test_folder_path, save_output_path, model, test_param_dict):
+    test_folder_image_paths = get_image_paths_from_folder(test_folder_path)
+    results = model.predict(test_folder_image_paths, **test_param_dict)
+    all_detections = []
+    for j, result in enumerate(results):
+        all_detections.append(sv.Detections.from_ultralytics(result))
+    # TODO: Check if below is the right way to get class list
+    save_results_as_coco(all_detections, test_folder_image_paths, class_list=results[0].names.values(),
+                         save_path=save_output_path)
+    return None
+
+
+def save_results_as_coco(results, image_paths,  class_list, save_path):
+    # creating detections and saving the inference results with coco format
+    name_image_dict = {}
+    name_detections_dict = {}
+
+    images = get_images_from_paths(image_paths)
+    image_names = get_names_from_names_with_extension(image_paths)
+    # TODO: below should be changed
+    image_names = [image_name + '.tif' for image_name in image_names]
+    for j, img_name in enumerate(image_names):
+        if results[j].mask is not None:
+            name_image_dict[img_name] = images[j]
+            name_detections_dict[img_name] = results[j]
+
+    inference_dataset = sv.DetectionDataset(class_list, name_image_dict, name_detections_dict)
+    inference_dataset.as_coco(annotations_path=save_path,
+                              approximation_percentage=0.95)
+    return None
