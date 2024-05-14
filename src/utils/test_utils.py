@@ -8,6 +8,7 @@ import os
 import shutil
 from pathlib import Path
 import supervision as sv
+import torch
 
 from src.utils.general_utils import (load_image_with_pil, load_image_with_cv,
                                      get_names_from_names_with_extension, get_image_paths_from_folder,
@@ -249,7 +250,8 @@ def create_val_dirs(data_yaml, data_yaml_address, parent_folder="."):
 
 def get_coco_file_on_images_without_labels(test_folder_path, save_output_path, model, test_param_dict):
     test_folder_image_paths = get_image_paths_from_folder(test_folder_path)
-    results = model.predict(test_folder_image_paths, **test_param_dict)
+    # results = model.predict(test_folder_image_paths, **test_param_dict)
+    results = get_model_predictions(model, test_folder_image_paths, test_param_dict)
     all_detections = []
     for j, result in enumerate(results):
         all_detections.append(sv.Detections.from_ultralytics(result))
@@ -277,3 +279,44 @@ def save_results_as_coco(results, image_paths,  class_list, save_path):
     inference_dataset.as_coco(annotations_path=save_path,
                               approximation_percentage=0.95)
     return None
+
+
+def get_model_predictions(model, folder_of_images, test_dict):
+    results = model.predict(
+        folder_of_images, **test_dict
+    )
+    results = preprocess_masks(results)
+    return results
+
+
+def preprocess_masks(results):
+    xy = []
+    for result_idx, result in enumerate(results):
+        all_masks = result.masks
+        if all_masks:
+            all_masks_data = all_masks.data.int().cpu().numpy().astype("uint8")
+            for mask_idx, mask in enumerate(all_masks_data):
+                mask_shape = mask.shape
+                cnt, heir = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+                # if contours are present, find the biggest one
+                if len(cnt) > 1:
+                    # find the biggest one by the area
+                    c = max(cnt, key=cv2.contourArea)
+                    # make new variables
+                    xy = c.reshape(-1, 2)
+                    xyn = xy.copy()
+                    xyn[:, 0], xyn[:, 1] = xyn[:, 0]/mask_shape[0], xyn[:, 1]/mask_shape[1]
+                    new_mask_data = mask.copy()
+                    new_mask_data[:, :] = 0
+                    cv2.drawContours(new_mask_data, [c], -1, 1, thickness=cv2.FILLED)
+                    # TODO: Update boxes object too using below data
+                    # TODO: Check if original mask was in cpu or cuda and change it acc. here
+                    new_mask_data = torch.from_numpy(new_mask_data)
+                    # update old variables
+                    all_masks.data[mask_idx].xy = xy
+                    all_masks.data[mask_idx].xyn = xyn
+                    cloned_all_masks_data = all_masks.data.clone()
+                    cloned_all_masks_data[mask_idx] = new_mask_data
+                    all_masks.data = cloned_all_masks_data
+                    results[result_idx].masks = all_masks
+    return results

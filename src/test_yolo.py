@@ -29,10 +29,11 @@ model = load_yolo(model_path)
 
 # simple testing without validation. In the case where no data labels are present.
 test_folder_path = "../data/test-data"  # folder containing test images
-save_output_path = '../results/coco_file-karthik.json'
+save_output_path = '../results/coco_file.json'
+
 test_param_dict = dict(
-    save=False,
-    plots=False,
+    save=True,
+    plots=True,
     show_labels=False,
     line_width=0,
     conf=0.5,
