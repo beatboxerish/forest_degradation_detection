@@ -1,6 +1,7 @@
 import geopandas as gpd
 import rasterio
 from rasterio import transform, features
+from rasterio.enums import Resampling
 import pandas as pd
 from glob import glob
 import os
@@ -48,8 +49,10 @@ def get_meta_data_for_transform(extent_file_path, res):
     return out_meta
 
 
-def get_resolution_from_resolution_file_path(res_file_path):
+def get_resolution_from_resolution_file_path(res_file_path, unit='m'):
     ds = rasterio.open(res_file_path)
+    # if unit=='m':
+    #     ds
     pixel_size_x, pixel_size_y = ds.res
     return pixel_size_x, pixel_size_y
 
@@ -63,4 +66,37 @@ def write_vector_to_raster(output_raster_path, out_meta, gdf, class_col_name):
 
         burned = features.rasterize(shapes=shapes, fill=0, out=out_arr, transform=out.transform)
         out.write_band(1, burned)
+    return None
+
+
+def resample_raster(input_raster_path, output_raster_path, scale_factor=1):
+    with rasterio.open(input_raster_path) as dataset:
+        # resample data to target shape
+        data = dataset.read(
+            out_shape=(
+                dataset.count,
+                int(dataset.height * scale_factor),
+                int(dataset.width * scale_factor)
+            ),
+            resampling=Resampling.bilinear
+        )
+
+        dst_transform = dataset.transform * dataset.transform.scale(
+            (dataset.width / data.shape[-1]),
+            (dataset.height / data.shape[-2])
+        )
+
+        dst_kwargs = dataset.meta.copy()
+        dst_kwargs.update(
+            {
+                "transform": dst_transform,
+                "width": data.shape[-1],
+                "height": data.shape[-2],
+            }
+        )
+
+        with rasterio.open(output_raster_path, "w", **dst_kwargs) as dst:
+            # iterate through bands
+            for i in range(data.shape[0]):
+                dst.write(data[i].astype(rasterio.uint32), i+1)
     return None
