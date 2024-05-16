@@ -2,6 +2,7 @@ import geopandas as gpd
 import rasterio
 from rasterio import transform, features
 from rasterio.enums import Resampling
+from rasterio.warp import calculate_default_transform, reproject
 import pandas as pd
 from glob import glob
 import os
@@ -49,12 +50,43 @@ def get_meta_data_for_transform(extent_file_path, res):
     return out_meta
 
 
-def get_resolution_from_resolution_file_path(res_file_path, unit='m'):
+# TODO: crs_in_use should be replaced by unit like metres/decimal degrees
+def get_resolution_from_resolution_file_path(res_file_path, crs_in_use):
     ds = rasterio.open(res_file_path)
-    # if unit=='m':
-    #     ds
-    pixel_size_x, pixel_size_y = ds.res
+    crs = ds.crs
+    transformed_ds = transform_crs(ds, crs_in_use, 'del_this.tif')
+    pixel_size_x, pixel_size_y = transformed_ds.res
     return pixel_size_x, pixel_size_y
+
+
+# TODO: hold output tif in memory if no path given
+def transform_crs(data_to_transform, dst_crs, output_tif_path):
+    # calculating transform along with other parameters for conversion
+    transform, width, height = calculate_default_transform(data_to_transform.crs, dst_crs,
+                                                           data_to_transform.width, data_to_transform.height,
+                                                           *data_to_transform.bounds)
+
+    new_kwargs = data_to_transform.meta.copy()
+    new_kwargs.update({
+        'crs': dst_crs,
+        'transform': transform,
+        'width': width,
+        'height': height
+    })
+
+    # implementing the reprojection
+    with rasterio.open(output_tif_path, 'w', **new_kwargs) as dst:
+        for i in range(1, data_to_transform.count + 1):
+            reproject(
+                source=rasterio.band(data_to_transform, i),
+                destination=rasterio.band(dst, i),
+                src_transform=data_to_transform.transform,
+                src_crs=data_to_transform.crs,
+                dst_transform=transform,
+                dst_crs=dst_crs,
+                resampling=Resampling.nearest
+            )
+    return rasterio.open(output_tif_path)
 
 
 def write_vector_to_raster(output_raster_path, out_meta, gdf, class_col_name):
