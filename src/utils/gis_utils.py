@@ -113,6 +113,7 @@ def resample_raster(input_raster_path, output_raster_path, scale_factor=1):
             resampling=Resampling.bilinear
         )
 
+        # TODO: check the -1, -2 below. Seems fishy
         dst_transform = dataset.transform * dataset.transform.scale(
             (dataset.width / data.shape[-1]),
             (dataset.height / data.shape[-2])
@@ -130,5 +131,5 @@ def resample_raster(input_raster_path, output_raster_path, scale_factor=1):
         with rasterio.open(output_raster_path, "w", **dst_kwargs) as dst:
             # iterate through bands
             for i in range(data.shape[0]):
-                dst.write(data[i].astype(rasterio.uint32), i+1)
+                dst.write(data[i], i+1)
     return None
