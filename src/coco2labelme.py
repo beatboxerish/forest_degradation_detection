@@ -120,8 +120,8 @@ class CocoDatasetHandler:
                 subprocess.call(['cp', os.path.join(self.imgpath, file), dirpath])
 
 
-coco_file_path = '../results/coco_file.json'
-images_folder_path = '../data/test-data/'
+coco_file_path = '../results/yolo_to_coco_trial.json'
+images_folder_path = '../data/Yolo-iteration-II/train/images'
 output_folder = '/Users/ishannangia/Desktop/del_this/'
 
 ds = CocoDatasetHandler(coco_file_path, images_folder_path)
