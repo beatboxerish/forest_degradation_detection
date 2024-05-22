@@ -1,4 +1,4 @@
-from src.utils.general_utils import open_yaml_file, save_yaml_file
+from mhadei_restoration.utils.general_utils import open_yaml_file, save_yaml_file
 
 
 def check_ultralytics_settings(address):

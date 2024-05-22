@@ -4,9 +4,9 @@ import shutil
 from pathlib import Path
 from ultralytics import YOLO
 
-from src.utils.general_utils import copy_images, get_names_from_names_with_extension
-from src.utils.coco_utils import save_coco_file
-from src.JSON2YOLO.general_json2yolo import convert_coco_json
+from mhadei_restoration.utils.general_utils import copy_images, get_names_from_names_with_extension
+from mhadei_restoration.utils.coco_utils import save_coco_file
+from mhadei_restoration.JSON2YOLO.general_json2yolo import convert_coco_json
 
 
 def get_train_test_val_image_names(coco_file, preprocess_dict):

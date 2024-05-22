@@ -2,7 +2,6 @@ from PIL import Image
 import cv2
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
-import torch
 import numpy as np
 import os
 import shutil
@@ -10,16 +9,12 @@ from pathlib import Path
 import supervision as sv
 import torch
 
-from src.utils.general_utils import (load_image_with_pil, load_image_with_cv,
-                                     get_names_from_names_with_extension, get_image_paths_from_folder,
-                                     get_images_from_paths)
-from src.utils.general_utils import open_yaml_file, save_yaml_file
-from src.utils.yolo_utils import create_labels_images
-
-ALL_COLORS = [
-    (255, 0, 0), (0, 255, 0), (0, 0, 255), (255, 255, 255), (255, 0, 255),
-    (0, 255, 0), (0, 255, 255), (255, 255, 0)
-]
+from mhadei_restoration.utils.general_utils import (load_image_with_pil, load_image_with_cv,
+                                                    get_names_from_names_with_extension, get_image_paths_from_folder,
+                                                    get_images_from_paths)
+from mhadei_restoration.utils.general_utils import open_yaml_file, save_yaml_file
+from mhadei_restoration.utils.yolo_utils import create_labels_images
+import mhadei_restoration.config as cfg
 
 
 def get_bboxes_masks_on_image(original_image_path, save_image_path, model):
@@ -114,7 +109,7 @@ def draw_masks(masks, image_rgb, class_to_color_map, current_classes):
 
 def get_class_to_color_map(id_to_class_name_map):
     total_classes = len(id_to_class_name_map.keys())
-    current_colors = ALL_COLORS[:total_classes]
+    current_colors = cfg.ALL_COLORS[:total_classes]
     class_to_color_map = {i: j for i, j in enumerate(current_colors)}
     return class_to_color_map
 
