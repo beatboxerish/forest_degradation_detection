@@ -40,14 +40,14 @@ vector_folders = ["/Users/ishannangia/Desktop/TfW/tifs and labels/restorationSit
                   "/Users/ishannangia/Desktop/TfW/tifs and labels/chromoStrobeSite_tifs/",
                   "/Users/ishannangia/Desktop/TfW/tifs and labels/plantationSite_tifs/"]
 extent_file_path = "/Users/ishannangia/Desktop/TfW/MhadeiAoi/MhadeiAoi.shp"
-output_raster_path = "/Users/ishannangia/github_repos/Mhadei_Restoration/results/full_raster.tif"
+output_raster_path = "/Users/ishannangia/github_repos/Mhadei_Restoration/results/all_dis_one_raster_10cm.tif"
 class_col_name = 'classes'
 
 # if using resolution from file
-# res_file_path = "/Users/ishannangia/Desktop/TfW/tifs and labels/restorationSite.tif"
-# res, _ = get_resolution_from_resolution_file_path(res_file_path, gpd.read_file(extent_file_path).crs)
+res_file_path = "/Users/ishannangia/Downloads/AllBands_stnlMar2024_resampled_10cm.tif"
+res, _ = get_resolution_from_resolution_file_path(res_file_path, gpd.read_file(extent_file_path).crs)
 # if using resolution value directly
-res = 0.00001  # desired resolution
+# res = 0.00001  # desired resolution
 
 # main processes
 vector_paths = get_vectors_from_folders(vector_folders)
