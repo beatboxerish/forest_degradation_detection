@@ -7,7 +7,7 @@ import os
 import numpy as np
 from PIL import Image
 
-from src.utils.general_utils import open_yaml_file
+from mhadei_restoration.utils.general_utils import open_yaml_file
 
 
 def get_categories(yaml_file):

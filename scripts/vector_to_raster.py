@@ -1,4 +1,4 @@
-from src.utils.gis_utils import *
+from mhadei_restoration.utils.gis_utils import *
 import geopandas as gpd
 
 
@@ -40,7 +40,7 @@ vector_folders = ["/Users/ishannangia/Desktop/TfW/tifs and labels/restorationSit
                   "/Users/ishannangia/Desktop/TfW/tifs and labels/chromoStrobeSite_tifs/",
                   "/Users/ishannangia/Desktop/TfW/tifs and labels/plantationSite_tifs/"]
 extent_file_path = "/Users/ishannangia/Desktop/TfW/MhadeiAoi/MhadeiAoi.shp"
-output_raster_path = "/Users/ishannangia/github_repos/Mhadei_Restoration/results/all_dis_one_raster_10cm.tif"
+output_raster_path = "/results/all_dis_one_raster_10cm.tif"
 class_col_name = 'classes'
 
 # if using resolution from file

@@ -1,4 +1,4 @@
-from src.utils.gis_utils import resample_raster, get_resolution_from_resolution_file_path
+from mhadei_restoration.utils.gis_utils import resample_raster, get_resolution_from_resolution_file_path
 import rasterio
 
 input_raster = "/Users/ishannangia/Desktop/AllBands_stnlMar2024.tif"
