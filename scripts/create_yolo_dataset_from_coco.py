@@ -9,33 +9,30 @@ from mhadei_restoration.utils.yolo_utils import (get_new_data_yaml, create_new_d
 
 
 annotation_file = ("/Users/ishannangia/github_repos/Mhadei_Restoration/data/"
-                     "original-data/annotation_files_coco-images_orthos/iteration-II.json")
+                     "original-data/annotation_files_coco-images_orthos/final_iteration.json")
 image_source_folder = ("/Users/ishannangia/github_repos/Mhadei_Restoration/data/"
                        "original-data/images_orthos/")
-target_parent_folder = '/Users/ishannangia/github_repos/Mhadei_Restoration/data/Yolo-iteration-II'
+target_parent_folder = '/Users/ishannangia/github_repos/Mhadei_Restoration/data/Yolo-Four-DIs-Final-Train-Val'
 
 
 # TODO: allow for stratified sampling of images
-# TODO: simplify this. Labels not included could be left as they are. Null labelling should also be an option.
 label_dict = {
     "Distorted Image": "Distorted Image",
-    'Canopy Gap: Shaded': 'Canopy Gap',
-    'Canopy Gap: Vegetated': 'Canopy Gap',
-    "Canopy Gap: Bare Land": 'Bare Land',
-    'Canopy Gap: Unknown': "Canopy Gap",
+    'Canopy Gap: Shaded': 'Canopy Gap: Shaded',
+    'Canopy Gap: Vegetated': 'Canopy Gap: Vegetated',
+    "Canopy Gap: Bare Land": 'Canopy Gap: Bare Land',
     'Plantation': 'Plantation',
-    'Potential Invasive': 'Potential Invasive',
-    'Unknown': 'Unknown',
-    'Potential Creeper': 'Potential Creeper',
-    'Cane': 'Cane'
+    # 'Potential Invasive': 'Potential Invasive',
+    # 'Potential Creeper': 'Potential Creeper',
+    # 'Cane': 'Cane'
 }
 
-# TODO: Allow for proportions below instead of absolute numbers
 preprocess_dict = {
     "train_size": 0.7,
     "val_size": 0.3,
     "test_size": 0,
     "labels": label_dict,
+    'k': 3
 }
 
 # grabbing all images

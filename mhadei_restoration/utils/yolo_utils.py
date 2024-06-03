@@ -41,6 +41,41 @@ def get_train_test_val_image_names(coco_file, preprocess_dict):
     return train_images, val_images, test_images
 
 
+def get_cross_val_image_names(coco_file, preprocess_dict):
+    """
+    Divides the images in supplied coco file into train, test, and val based
+    on preprocess_dict
+    :param coco_file:
+    :param preprocess_dict:
+    :return:
+    """
+    k = preprocess_dict['k']
+
+    train_image_dict = {i: [] for i in range(0, k)}
+    val_image_dict = {i: [] for i in range(0, k)}
+    test_image_dict = {i: [] for i in range(0, k)}
+
+    images = [image['file_name'] for image in coco_file["images"]]
+    random.shuffle(images)
+    divide_in = round(len(images)/k + 0.5)
+    sub_list_of_images = [images[i:i + divide_in] for i in range(0, len(images), divide_in)]
+
+    for division_number in range(0, k):
+        current_images = sub_list_of_images.copy()
+        test_image_dict[division_number] = current_images[division_number]
+        current_images.pop(division_number)
+        remaining_images = []
+        for image_list in current_images:
+            remaining_images.extend(image_list)
+        random.shuffle(remaining_images)
+        train_size = int(preprocess_dict['train_size'] * len(remaining_images))
+        train_image_dict[division_number] = remaining_images[:train_size]
+        val_image_dict[division_number] = remaining_images[train_size:]
+
+    return train_image_dict, val_image_dict, test_image_dict
+
+
+
 def copy_and_move_images(image_source_folder, train_image_names, val_image_names, test_image_names,
                          target_parent_folder, data_yaml):
     if len(train_image_names):

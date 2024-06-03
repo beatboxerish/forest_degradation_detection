@@ -12,20 +12,19 @@ annotation_file = ("/Users/ishannangia/github_repos/Mhadei_Restoration/data/"
                      "original-data/annotation_files_coco-images_orthos/final_iteration.json")
 image_source_folder = ("/Users/ishannangia/github_repos/Mhadei_Restoration/data/"
                        "original-data/images_orthos/")
-target_parent_folder = '/Users/ishannangia/github_repos/Mhadei_Restoration/data/Yolo-All-DIs-Final-Iteration'
+target_parent_folder = '/Users/ishannangia/github_repos/Mhadei_Restoration/data/Yolo-Four-DIs-Final-Iteration'
 
 
 # TODO: allow for stratified sampling of images
-# TODO: simplify this. Labels not included could be left as they are. Null labelling should also be an option.
 label_dict = {
     "Distorted Image": "Distorted Image",
     'Canopy Gap: Shaded': 'Canopy Gap: Shaded',
     'Canopy Gap: Vegetated': 'Canopy Gap: Vegetated',
     "Canopy Gap: Bare Land": 'Canopy Gap: Bare Land',
     'Plantation': 'Plantation',
-    'Potential Invasive': 'Potential Invasive',
-    'Potential Creeper': 'Potential Creeper',
-    'Cane': 'Cane'
+    # 'Potential Invasive': 'Potential Invasive',
+    # 'Potential Creeper': 'Potential Creeper',
+    # 'Cane': 'Cane'
 }
 
 preprocess_dict = {

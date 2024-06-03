@@ -144,15 +144,23 @@ def preprocess_labels_single_coco_file(coco_file, label_dict):
     old_category_id_to_name = get_cat_id_to_name_dict(coco_file['categories'])
 
     old_label_to_new_id, new_label_to_new_id = get_id_dict_from_label_dict(label_dict)
-    new_category_list = [{"id" :v, 'name' :k, 'supercategory' :k} for k, v in new_label_to_new_id.items()]
+    new_category_list = [{"id": v, 'name': k, 'supercategory': k} for k, v in new_label_to_new_id.items()]
     coco_file['categories'] = new_category_list
 
+    new_annotations = []
     for annotation in coco_file['annotations']:
         current_category_id = annotation["category_id"]
         current_category_name = old_category_id_to_name[current_category_id]
-        new_id = old_label_to_new_id[current_category_name]
+        try:
+            new_id = old_label_to_new_id[current_category_name]
+        except KeyError:
+            continue
         annotation['category_id'] = new_id
-
+        new_annotations.append(annotation)
+    # rectifying annotation ids
+    for annotation_id, annotation in enumerate(new_annotations):
+        annotation['id'] = annotation_id + 1
+    coco_file['annotations'] = new_annotations
     return coco_file
 
 

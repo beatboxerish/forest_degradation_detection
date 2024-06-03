@@ -10,12 +10,13 @@ from PIL import Image
 from mhadei_restoration.utils.general_utils import open_yaml_file
 
 
+# TODO: Clean this and all code relevant to getting labelme files from yolo
 def get_categories(yaml_file):
     data = open_yaml_file(yaml_file)
     classes = data["names"]
     class_dict = dict()
     for i_idx, i_class in enumerate(classes):
-        class_dict[i_class] = i_idx
+        class_dict[i_class] = i_idx + 1
     return class_dict
 
 
@@ -23,7 +24,7 @@ def get_categories(yaml_file):
 def yolo_to_coco(yolo_annotation, image_id, img_width, img_height, ann_id_start):
     annotations = []
     for ann_line in yolo_annotation.splitlines():
-        cat_id = int(ann_line[0])
+        cat_id = int(ann_line[0]) + 1
         parts = ann_line[1:].strip().split()
         xs, ys = [float(x) for x in parts[0::2]], [float(x) for x in parts[1::2]]
         xs, ys = [int(img_width*x) for x in xs], [int(img_height*y) for y in ys]
@@ -70,9 +71,9 @@ def yolo_to_coco(yolo_annotation, image_id, img_width, img_height, ann_id_start)
 
 
 # Configuration
-data_yaml = '../data/Yolo-iteration-II/data.yaml'
-yolo_labels_dir = "../data/Yolo-iteration-II/val/labels"  # Path containing your YOLO .txt files
-output_json_path = "../results/coco-Yolo-iteration-II-val.json"  # Output COCO format JSON file
+data_yaml = '../data/Yolo-Four-DIs-Final-Iteration-2/data.yaml'
+yolo_labels_dir = "../data/Yolo-Four-DIs-Final-Iteration-2/test/labels"  # Path containing your YOLO .txt files
+output_json_path = "../data/Yolo-Four-DIs-Final-Iteration-2-test.json"  # Output COCO format JSON file
 
 # initialize COCO dataset structure
 coco_dataset = {
