@@ -1,10 +1,12 @@
 import os
 from mhadei_restoration.utils.coco_utils import read_coco_file, save_coco_file
 
-
+# folder containing coco file to correct
 parent_folder = ("/Users/ishannangia/github_repos/Mhadei_Restoration/data/"
                  "original-data/annotation_files_coco-images_orthos/")
-file_name = "iteration-II.json"
+
+# coco file to correct
+file_name = "final_iteration.json"
 current_annotation_file_address = os.path.join(parent_folder, file_name)
 
 # loading the coco file. Only loads 1 file for now.

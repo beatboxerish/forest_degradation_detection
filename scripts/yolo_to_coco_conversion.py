@@ -71,9 +71,9 @@ def yolo_to_coco(yolo_annotation, image_id, img_width, img_height, ann_id_start)
 
 
 # Configuration
-data_yaml = '../data/Yolo-Four-DIs-Final-Iteration-2/data.yaml'
-yolo_labels_dir = "../data/Yolo-Four-DIs-Final-Iteration-2/test/labels"  # Path containing your YOLO .txt files
-output_json_path = "../data/Yolo-Four-DIs-Final-Iteration-2-test.json"  # Output COCO format JSON file
+data_yaml = '../data/Yolo-Three-DIs-Final-Train-Val/data.yaml'  # input data.yaml file from yolo dataset
+yolo_labels_dir = "../data/Yolo-Three-DIs-Final-Train-Val/val/labels"  # Path containing your YOLO .txt files
+output_json_path = "../data/Yolo-Three-DIs-Final-Train-Val-val.json"  # Output COCO format JSON file
 
 # initialize COCO dataset structure
 coco_dataset = {

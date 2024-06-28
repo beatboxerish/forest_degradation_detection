@@ -2,45 +2,36 @@ from mhadei_restoration.utils.gis_utils import *
 import geopandas as gpd
 
 
+# change the below mapping depending on how you want to map degradation indicator names to classes
 def map_name_to_class(x):
     if 'Bare' in x:
         return 1
-    elif 'Canopy' in x:
+    elif 'Shaded' in x:
         return 2
-    elif 'Plantation' in x:
+    elif 'Vegetated' in x:
         return 3
-    elif 'Invasive' in x:
+    elif 'Plantation' in x:
         return 4
-    elif 'Creeper' in x:
+    elif 'Invasive' in x:
         return 5
-    elif 'Cane' in x:
+    elif 'Creeper' in x:
         return 6
-
-    # if 'Vegetated' in x:
-    #     return 1
-    # elif 'Shaded' in x:
-    #     return 2
-    # elif 'Bare' in x:
-    #     return 3
-    # elif 'Plantation' in x:
-    #     return 4
-    # elif 'Invasive' in x:
-    #     return 5
-    # elif 'Creeper' in x:
-    #     return 6
-    # elif 'Cane' in x:
-    #     return 7
+    elif 'Cane' in x:
+        return 7
     return 0
 
 
 # TODO: Convert below paths from relative to full inside of functions
 # input variables
+# different site-specific folders which contain vector files
 vector_folders = ["/Users/ishannangia/Desktop/TfW/tifs and labels/restorationSite_tifs/",
                   "/Users/ishannangia/Desktop/TfW/tifs and labels/burntSite_tifs/",
                   "/Users/ishannangia/Desktop/TfW/tifs and labels/chromoStrobeSite_tifs/",
                   "/Users/ishannangia/Desktop/TfW/tifs and labels/plantationSite_tifs/"]
+# file to understand extent of the final raster that will be created
 extent_file_path = "/Users/ishannangia/Desktop/TfW/MhadeiAoi/MhadeiAoi.shp"
-output_raster_path = "/results/all_dis_one_raster_10cm.tif"
+# raster path to be outputted
+output_raster_path = "/Users/ishannangia/Desktop/TfW/all_true_dis.tif"
 class_col_name = 'classes'
 
 # if using resolution from file

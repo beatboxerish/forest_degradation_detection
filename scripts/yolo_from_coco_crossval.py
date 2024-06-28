@@ -8,19 +8,25 @@ from mhadei_restoration.utils.yolo_utils import (get_new_data_yaml, create_new_d
                                                  get_cross_val_image_names)
 
 
+# base coco file
 annotation_file = ("/Users/ishannangia/github_repos/Mhadei_Restoration/data/"
                      "original-data/annotation_files_coco-images_orthos/final_iteration.json")
+
+# image folder for which annotations have been done
 image_source_folder = ("/Users/ishannangia/github_repos/Mhadei_Restoration/data/"
                        "original-data/images_orthos/")
-target_parent_folder = '/Users/ishannangia/github_repos/Mhadei_Restoration/data/Yolo-Four-DIs-Final-Iteration'
+
+# yolo dataset name where yolo dataset files should be created
+target_parent_folder = '/Users/ishannangia/github_repos/Mhadei_Restoration/data/Yolo-Three-DIs-Final-Iteration'
 
 
 # TODO: allow for stratified sampling of images
+# change this dict depending on what labels you want to create in the final yolo dataset
 label_dict = {
     "Distorted Image": "Distorted Image",
-    'Canopy Gap: Shaded': 'Canopy Gap: Shaded',
-    'Canopy Gap: Vegetated': 'Canopy Gap: Vegetated',
-    "Canopy Gap: Bare Land": 'Canopy Gap: Bare Land',
+    'Canopy Gap: Shaded': 'Canopy Gap',
+    'Canopy Gap: Vegetated': 'Canopy Gap',
+    "Canopy Gap: Bare Land": 'Bare Land',
     'Plantation': 'Plantation',
     # 'Potential Invasive': 'Potential Invasive',
     # 'Potential Creeper': 'Potential Creeper',

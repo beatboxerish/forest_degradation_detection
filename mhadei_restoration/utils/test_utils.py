@@ -245,7 +245,6 @@ def create_val_dirs(data_yaml, data_yaml_address, parent_folder="."):
 
 def get_coco_file_on_images_without_labels(test_folder_path, save_output_path, model, test_param_dict):
     test_folder_image_paths = get_image_paths_from_folder(test_folder_path)
-    # results = model.predict(test_folder_image_paths, **test_param_dict)
     results = get_model_predictions(model, test_folder_image_paths, test_param_dict)
     all_detections = []
     for j, result in enumerate(results):
